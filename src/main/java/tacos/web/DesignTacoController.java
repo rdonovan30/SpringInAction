@@ -9,12 +9,14 @@ import javax.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import lombok.extern.slf4j.Slf4j;
 import tacos.Taco;
+import tacos.Design;
 import tacos.Ingredient;
 import tacos.Ingredient.Type;
 
@@ -42,19 +44,27 @@ public class DesignTacoController {
 	      model.addAttribute(type.toString().toLowerCase(),
 	          filterByType(ingredients, type));
 	    }
-	    model.addAttribute("design", new Taco());
+	    model.addAttribute("taco", new Taco());
 
 	    return "design";
 	}
 	
-//	@PostMapping
-//	public String processDesign(Design design) {
-//	  // Save the taco design...
-//	  // We'll do this in chapter 3
-//	  log.info("Processing design: " + design);
-//
-//	  return "redirect:/orders/current";
-//	}
+	@PostMapping
+	public String processDesign(@Valid Taco taco, Errors errors) {
+	    // Save the taco design...
+	    // We'll do this in chapter 3
+	    log.info("Processing design: " + taco);
+	    if (errors.hasErrors()) {
+	        log.info("Has errors");
+	        List<ObjectError> errorList = errors.getAllErrors();
+	        for (ObjectError e : errorList) {
+	            System.out.println(e.getDefaultMessage());
+	        }
+	        return "design";
+	    }
+
+	    return "redirect:/orders/current";
+	}
 	
 	List<Ingredient> filterByType(List<Ingredient> ingredients, Type type) {
 		return ingredients.stream().filter(it -> it.getType().equals(type)).collect(Collectors.toList());
