@@ -1,4 +1,7 @@
 package tacos;
+import java.sql.Date;
+import java.util.List;
+
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
@@ -7,6 +10,9 @@ import lombok.Data;
 
 @Data
 public class Order {
+	private Long id;
+	private Date placedAt;
+	
     @NotBlank(message="Name is required")
     private String name;
     @NotBlank(message="Street is required")
@@ -17,7 +23,9 @@ public class Order {
     private String state;
     @NotBlank(message="Zip Code is required")
     private String zip;
+    
     //@CreditCardNumber(message="Not a valid credit card number", ignoreNonDigitCharacters=true)
+    //Commented out because how tf am I supposed to test with valid cc numbers
     private String ccNumber;
     @Pattern(regexp="^(0[1-9]|1[0-2])([\\/])([1-9][0-9])$",
             message="Must be formatted MM/YY")
@@ -25,5 +33,10 @@ public class Order {
     @Digits(integer=3, fraction=0, message="Invalid CVV")
     private String ccCVV;
     
-
+    private List<Taco> tacos;
+    
+    public void addDesign(Taco taco) {
+    	tacos.add(taco);
+    }
+    
 }
